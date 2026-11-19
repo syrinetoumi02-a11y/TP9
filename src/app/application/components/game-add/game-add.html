@@ -1,42 +1,87 @@
-<div class="container">
-    <h3>Ajout d'un jeu</h3>
-    <form>
-        <div>
-            <label for="gameName">Nom</label>
-            <input type="text" id="gameName" >
-        </div>
-        <div>
-            <label for="gamePrice">Prix</label>
-            <input type="number" id="gamePrice" >
-        </div>
+<div class="container mt-4">
+  <h3>Ajout d'un jeu</h3>
 
-        <div>
-            <label> Made In </label>
-            <label>
-                <input type="radio" value="Tunisie" >Tunisie
-            </label>
-            <label>
-                <input type="radio" value="Autre" >Autre
-            </label>
-        </div>
-        <div>
-            <label for="gameCategory">Catégorie</label>
-            <select id="gameCategory" >
+  <form [formRoot]="gameForm" (submit)="onSubmit()">
+    <!-- Nom -->
+    <div class="mb-3">
+      <label for="gameName">Nom</label>
 
+      <input type="text" id="gameName" class="form-control" [formField]="gameForm.name" />
 
-            </select>
-        </div>
-        <div>
-            <label for="gameIsNew">
-                <input type="checkbox" id="gameIsNew" > Nouveau
-            </label>
-        </div>
+      @if (gameForm.name().touched() && gameForm.name().invalid()) {
+        @for (error of gameForm.name().errors(); track error) {
+          <div class="text-danger">
+            {{ error.message }}
+          </div>
+        }
+      }
+    </div>
 
-        <div>
-            <input type="submit" class="btn btn-success" value="Ajouter">
-            <input type="reset" class="btn btn-warning"  value="Effacer">
-        </div>
-    </form>
+    <!-- Prix -->
+    <div class="mb-3">
+      <label for="gamePrice">Prix</label>
 
+      <input type="number" id="gamePrice" class="form-control" [formField]="gameForm.price" />
+
+      @if (gameForm.price().touched() && gameForm.price().invalid()) {
+        @for (error of gameForm.price().errors(); track error) {
+          <div class="text-danger">
+            {{ error.message }}
+          </div>
+        }
+      }
+    </div>
+
+    <!-- Made In -->
+    <div class="mb-3">
+      <label>Made In</label>
+
+      <div>
+        <label class="me-3">
+          <input type="radio" value="Tunisie" [formField]="gameForm.madeIn" />
+          Tunisie
+        </label>
+
+        <label>
+          <input type="radio" value="Autre" [formField]="gameForm.madeIn" />
+          Autre
+        </label>
+      </div>
+    </div>
+
+    <!-- Catégorie -->
+    <div class="mb-3">
+      <label for="gameCategory">Catégorie</label>
+
+      <select id="gameCategory" class="form-select" [formField]="gameForm.category">
+        @for (cat of categories; track cat) {
+          <option [value]="cat">{{ cat }}</option>
+        }
+      </select>
+    </div>
+
+    <!-- Nouveau -->
+    <div class="mb-3">
+      <label for="gameIsNew">
+        <input type="checkbox" id="gameIsNew" [formField]="gameForm.isNew" />
+        Nouveau
+      </label>
+    </div>
+
+    <!-- Boutons -->
+    <div class="mb-3">
+      <button type="submit" class="btn btn-success me-2" [disabled]="gameForm().invalid()">
+        Ajouter
+      </button>
+
+      <button type="button" class="btn btn-warning" (click)="resetForm()">Effacer</button>
+    </div>
+  </form>
+
+  <hr />
+
+  <!-- Liste des jeux -->
+  <h3>Liste des jeux</h3>
+
+  <pre>{{ games() | json }}</pre>
 </div>
-
